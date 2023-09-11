@@ -1,0 +1,40 @@
+.layout {
+    display: flex;
+}
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: brown;
+    color: #fff;
+    height: 100vh;
+    padding: 10px;
+}
+.sidebar_menu{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+}
+.sidebar_menu a{
+    text-decoration: none;
+    text-transform: uppercase;
+}
+.content{
+    margin-left: 10px;
+    width: 89%;
+}
+.content_banner{
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    border-bottom: #f5bfd5 solid 1px;
+}
+.content_banner a{
+    text-decoration: none;
+    color: #f170a6;
+    font-size: 47px;
+    font-family: 'Qwitcher Grypen', cursive;
+    font-weight: 700;
+}

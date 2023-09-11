@@ -1,0 +1,48 @@
+@import url('https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css');
+@import url('../components/Layout/layout.css');
+:root{
+    --primary-color:#dfdcdc;
+    --secondary-color: #fff;
+    --primary-btn-color:#4f4fec;
+    --secondary-btn-color:#817e7f;
+    --color-white:#ffffff;
+    --text-primary:#575555;
+    --sidebar-bg:#2b2a2a;
+  }
+/* Login styling  */
+.main_form{
+    padding: 0 50px;
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+}
+.form__user{
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    padding: 50px;
+    min-width:37%;
+    gap: 20px;
+    box-shadow: 1px 1px 5px;
+    border-radius: 20px;
+}
+.btn__custom {
+    outline: none;
+    border: none;
+    text-transform: uppercase;
+    border-radius: 50px;
+    padding: 10px 25px;
+    font-size: 14px;
+    margin: 0;
+    cursor: pointer;
+}
+.btn__signin{
+    background-color: var(--primary-btn-color);
+    color: var(--color-white);
+}
+.btn__signup{
+    background: var(--secondary-btn-color);
+    color: var(--color-white);
+    text-decoration: none;
+    text-align: center;
+}
