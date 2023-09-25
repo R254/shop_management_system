@@ -16,6 +16,10 @@ const AddProduct = () => {
         setMessage(res.data.message)
         setState('Success');
         setValues(e.target.reset())
+      }else if (res.data.Status === 'Updated'){
+        setMessage(res.data.message)
+        setState('Success');
+        setValues(e.target.reset())
       }else{
         setMessage(res.data.error)
         setState('error');

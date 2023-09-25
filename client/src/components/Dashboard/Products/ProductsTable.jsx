@@ -1,23 +1,11 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-const Sales = () => {
-    const [products, setProducts] = useState([])
-    useEffect(() => {
-        axios.get('http://localhost:3002/api/sales')
-        .then(response => {
-        setProducts(response.data)
-        })
-    }, [])
+const ProductsTable = ({ data }) => {
 
     let grand_total_purchase = 0;
     let grand_total_sales = 0;
     let grand_total_profit = 0;
-    
   return (
-    <>
-    {/* <Link to='/sell' className="btn btn-primary m-1">Sell</Link> */}
     <table className="table table-bordered">
         <thead className="table-light">
           <tr>
@@ -32,11 +20,12 @@ const Sales = () => {
             <th scope="col">T. Purchase</th>
             <th scope="col">T. Sales</th>
             <th scope="col">Profit/Item</th>
+            <th scope="col" colSpan={3}>Action</th>
           </tr>
         </thead>
         <tbody>
           {
-            products.map((product) => {
+            data.map((product) => {
               const profit_per_unit = Math.round((product.selling - product.buying) * 100)/100;
               const profit_per_item = Math.round((profit_per_unit * product.quantity) * 100)/100;
               const sub_total_purchase = Math.round((product.buying * product.quantity) * 100)/100;
@@ -47,7 +36,6 @@ const Sales = () => {
               grand_total_sales += sub_total_sales;
               grand_total_profit += profit_per_item;
               grand_total_profit = Math.round(grand_total_profit * 100)/100
-
 
               return (
                 <tr key={product.id}>
@@ -62,6 +50,9 @@ const Sales = () => {
                   <th scope="col">{sub_total_purchase}</th>
                   <th scope="col">{sub_total_sales}</th>
                   <td>{profit_per_item}</td>
+                  <td><Link className="btn btn-primary" to={`/sell/${product.id}`}>Sell</Link></td>
+                  <td><Link className="btn btn-success" to={`/restock/${product.id}`}>Add</Link></td>
+                  <td><Link className="btn btn-warning" to={`/edit/${product.id}`}>Edit</Link></td>
                 </tr>
               )
             })
@@ -77,8 +68,7 @@ const Sales = () => {
           </tr>
         </tfoot>
       </table>
-    </>
   )
 }
 
-export default Sales
+export default ProductsTable

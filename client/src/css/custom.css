@@ -46,3 +46,13 @@
     text-decoration: none;
     text-align: center;
 }
+.products-grp{
+    display: flex;
+    flex-direction: row;
+}
+.products-grp input{
+    outline: none;
+    border: none;
+    border-radius: 8px;
+    min-width: 25%;
+}

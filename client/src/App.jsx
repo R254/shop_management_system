@@ -1,6 +1,6 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import { AddExpense, AddProduct, Dashboard, Expense, Layout, Login, 
-  NotFound, Products, Register, Sales, Sell, Selling } from './components'
+import { AddExpense, AddProduct, Dashboard, Edit, Expense, Layout, Login, 
+  NotFound, Products, Register, Restock, Sales, Sell, Selling } from './components'
 const App = () => {
   const router = createBrowserRouter([
     {
@@ -21,6 +21,18 @@ const App = () => {
           element: <AddProduct />
         },
         {
+          path:'/restock/:id',
+          element: <Restock />
+        },
+        {
+          path:'/edit/:id',
+          element: <Edit />
+        },
+        {
+          path:'/sell/:id',
+          element: <Sell />
+        },
+        {
           path:'/selling',
           element: <Selling />
         },
@@ -35,11 +47,7 @@ const App = () => {
         {
           path:'/sales',
           element: <Sales />
-        },
-        {
-          path:'/sell',
-          element: <Sell />
-        },
+        }
       ]
     },
     {
