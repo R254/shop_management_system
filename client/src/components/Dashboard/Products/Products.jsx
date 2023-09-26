@@ -2,26 +2,22 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ProductsTable from "./ProductsTable";
-// import { productsList } from "../../Products";
 
 const Products = () => {
   const [products, setProducts] = useState([])
   const [search, setSearch] = useState('')
 
   useEffect(() => {
-    axios.get(`http://localhost:3002/api/products`)
-    .then(response => {
-      setProducts(response.data)
-    })
-  }, [])
+    const fetchProducts = async () => {
+      await axios.get(`http://localhost:3002/api/products?q=${search}`)
+      .then(response => {
+        setProducts(response.data)
+      })
+    }
+    if (search.length === 0 || search.length > 2) fetchProducts()
+  }, [search])
 
-  const handleSearch = (data) => {
-    return data.filter(product => 
-      product.category.toLowerCase().includes(search) ||
-      product.name.toLowerCase().includes(search) ||
-      product.description.toLowerCase().includes(search)
-      )
-  }
+ 
   
   return (
     <>
@@ -30,7 +26,7 @@ const Products = () => {
         <input type="text" placeholder="Search..." className="m-1" 
         onChange={(e) => setSearch(e.target.value)} />
       </div>
-      <ProductsTable data={handleSearch(products)}/>
+      <ProductsTable data={products}/>
     </>
   )
 }

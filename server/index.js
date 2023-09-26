@@ -135,13 +135,22 @@ app.post('/api/addproduct', (req, res) => {
 
 // Fetch products from database
 app.get('/api/products', (req, res) => {
+    const { q } = req.query
+    const keys = ['category','name','description']
+
+    const handleSearch = (data) => {
+        return data.filter(product => 
+          keys.some((key) => product[key].toLowerCase().includes(q))
+          )
+      }
+
     const query = 'SELECT * FROM products';
     conn.query(query, (err, results) => {
         if (err) {
             console.error('Error fetching Products: ', err);
             res.status(500).json({ error: 'Error fetching products' });
           } else {
-            res.status(200).json(results);
+            res.status(200).json(handleSearch(results).splice(0,25));
           }
     })
 })
