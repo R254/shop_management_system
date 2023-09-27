@@ -6,6 +6,7 @@ import axios from "axios";
 const Layout = () => {
     const [auth, setAuth] = useState(false);
     const [name, setName] = useState('')
+    const [role, setRole] = useState('')
     const navigate = useNavigate()
 
     axios.defaults.withCredentials = true;
@@ -15,6 +16,7 @@ const Layout = () => {
             if (res.data.Status === 'Success') {
                 setAuth(true);
                 setName(res.data.name)
+                setRole(res.data.role)
                 navigate('/products')
             }else {
                 setAuth(false)
@@ -32,7 +34,7 @@ const Layout = () => {
             <div className="content">
                 <nav className="content_banner">
                     <Link to='/dashboard'>One-Stop Shop</Link>
-                    <p>Welcome back, {name}</p>
+                    <p>Welcome back, {name}, {role}</p>
                 </nav>
                 <Outlet/>
             </div>

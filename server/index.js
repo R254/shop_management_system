@@ -73,6 +73,7 @@ const verifyUser = (req,res,next) => {
             return res.json({error: "Invalid token"});
         } else {
             req.name = decoded.name;
+            req.role = decoded.role;
             next();
         }
         })
@@ -81,7 +82,7 @@ const verifyUser = (req,res,next) => {
 
 // Checking is a user has an active session
 app.get('/', verifyUser, (req,res) => {
-    return res.json({Status: "Success",  name: req.name});
+    return res.json({Status: "Success",  name: req.name, role:req.role});
 })
 
 // Logging into the database
@@ -96,7 +97,8 @@ app.post('/login',(req, res) => {
             bcryptjs.compare(req.body.password.toString(), results[0].password, (err, response) => {
                 if (response) {
                     const name = results[0].firstname + " "+ results[0].lastname;
-                    const token = jwt.sign({name}, "jwt-secret-key", {expiresIn: "1d"});
+                    const role = results[0].role;
+                    const token = jwt.sign({name,role}, "jwt-secret-key", {expiresIn: "1d"});
                     res.cookie('token', token);
                     return res.json({Status: "Success"});
                 } else {

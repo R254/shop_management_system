@@ -1,6 +1,25 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const ProductsTable = ({ data }) => {
+  const [role, setRole] = useState('')
+
+
+  axios.defaults.withCredentials = true;
+  useEffect(() => {
+    const checkRole = async () => {
+      await axios.get('http://localhost:3002/')
+      .then(res => {
+        if (res.data.Status === 'Success') {
+          setRole(res.data.role)
+        }
+      })
+    }
+    checkRole()
+  }, [])
+  
+  
 
     let grand_total_purchase = 0;
     let grand_total_sales = 0;
@@ -20,7 +39,14 @@ const ProductsTable = ({ data }) => {
             <th scope="col">T. Purchase</th>
             <th scope="col">T. Sales</th>
             <th scope="col">Profit/Item</th>
-            <th scope="col" colSpan={3}>Action</th>
+            {
+              role === 'admin' || role === 'user' 
+              ?
+              <th scope="col" colSpan={3}>Action</th>
+              :
+              <></>
+            }
+            
           </tr>
         </thead>
         <tbody>
@@ -50,9 +76,21 @@ const ProductsTable = ({ data }) => {
                   <th scope="col">{sub_total_purchase}</th>
                   <th scope="col">{sub_total_sales}</th>
                   <td>{profit_per_item}</td>
-                  <td><Link className="btn btn-primary" to={`/sell/${product.id}`}>Sell</Link></td>
-                  <td><Link className="btn btn-success" to={`/restock/${product.id}`}>Add</Link></td>
-                  <td><Link className="btn btn-warning" to={`/edit/${product.id}`}>Edit</Link></td>
+                  {
+                    role === "admin" 
+                    ? 
+                    <>
+                      <td><Link className="btn btn-primary" to={`/sell/${product.id}`}>Sell</Link></td>
+                      <td><Link className="btn btn-success" to={`/restock/${product.id}`}>Add</Link></td>
+                      <td><Link className="btn btn-warning" to={`/edit/${product.id}`}>Edit</Link></td>
+                    </>
+                    : role === "user" ?
+                    <td><Link className="btn btn-primary" to={`/sell/${product.id}`}>Sell</Link></td>
+                    : 
+                    <></>
+                  }
+                  
+                  
                 </tr>
               )
             })
