@@ -18,9 +18,9 @@ const Selling = () => {
   return (
     <>
     <div className="products-grp">
-        <input type="text" placeholder="Search..." className="m-1" 
-        onChange={(e) => setSearch(e.target.value)} />
-      </div>
+      <input type="text" placeholder="Search..." className="m-1" 
+      onChange={(e) => setSearch(e.target.value)} />
+    </div>
      <table className="table table-bordered">
         <thead className="table-light">
           <tr>

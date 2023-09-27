@@ -11,30 +11,34 @@ const Sell = () => {
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
     const [quantity, setQuantity] = useState(0)
+
     useEffect(() => {
-        axios.get('http://localhost:3002/api/display/'+id)
+      const fetchProducts = async () => {
+        await axios.get('http://localhost:3002/api/display/'+id)
         .then(res => {
-            setName(res.data[0].name)
-            setDescription(res.data[0].description)
-            setQuantity(res.data[0].quantity)
+          setName(res.data[0].name)
+          setDescription(res.data[0].description)
+          setQuantity(res.data[0].quantity)
         })
         .catch(err => console.log(err))
-    }, [])
+      }
+      fetchProducts()
+    }, [id])   
 
     const handleSell = async (e) => {
-        e.preventDefault();
-        axios.put('http://localhost:3002/api/sell/'+id, {name, description,quantity})
-        .then((res) => {
-            if (res.data.Status === 'Sold') {
-                setMessage(res.data.message)
-                setState('Success')
-                navigate('/sales')
-              }
-              else{
-                setMessage(res.data.error)
-                setState('error');
-              }
-        })
+      e.preventDefault();
+      await axios.put('http://localhost:3002/api/sell/'+name, {description,quantity})
+      .then((res) => {
+          if (res.data.Status === 'Sold') {
+              setMessage(res.data.message)
+              setState('Success')
+              navigate('/sales')
+            }
+            else{
+              setMessage(res.data.error)
+              setState('error');
+            }
+      })
     }
   return (
     <>

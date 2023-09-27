@@ -4,12 +4,28 @@ import { useEffect, useState } from "react";
 
 const Sales = () => {
     const [products, setProducts] = useState([])
+    const [search, setSearch] = useState('')
+
     useEffect(() => {
-        axios.get('http://localhost:3002/api/sales')
+      const fetchSales = async () => {
+        await axios.get('http://localhost:3002/api/sales/')
         .then(response => {
-        setProducts(response.data)
+          setProducts(response.data)
         })
+        .catch(err => console.log(err))
+      }
+      fetchSales()
     }, [])
+
+    useEffect(() => {
+      const fetchProducts = async () => {
+        await axios.get(`http://localhost:3002/api/sales?q=${search}`)
+        .then(response => {
+          setProducts(response.data)
+        })
+      }
+      if (search.length === 0 || search.length > 2) fetchProducts()
+    }, [search])
 
     let grand_total_purchase = 0;
     let grand_total_sales = 0;
@@ -18,6 +34,10 @@ const Sales = () => {
   return (
     <>
     {/* <Link to='/sell' className="btn btn-primary m-1">Sell</Link> */}
+    <div className="products-grp">
+      <input type="text" placeholder="Search..." className="m-1" 
+      onChange={(e) => setSearch(e.target.value)} />
+    </div>
     <table className="table table-bordered">
         <thead className="table-light">
           <tr>

@@ -11,5 +11,5 @@ export {default as Restock} from './Dashboard/Products/Restock';
 export {default as Edit} from './Dashboard/Products/Edit';
 export {default as Expense} from './Dashboard/Expense/Expense';
 export {default as AddExpense} from './Dashboard/Expense/AddExpense';
-export {default as Selling} from './Dashboard/Selling/Selling';
+export {default as Selling} from './Dashboard/SellingPrice/Selling';
 export {default as Sales} from './Dashboard/Sales/Sales';
