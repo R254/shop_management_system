@@ -46,9 +46,10 @@ app.post('/register', (req, res) => {
             return res.json({error: "Error handling registration"})
         }
         if (results.length > 0) {
-            return res.json({error: 'The email used already exists! Please sign in!'})
+            return res.json({error: 'The email used already exists! Please sign in!', Status: 'Error'})
         } else {
-            const query = 'INSERT INTO users (`firstname`,`lastname`,`email`,`role`,`password`) VALUES(?)';
+            // const query = 'INSERT INTO users (`firstname`,`lastname`,`email`,`role`,`password`) VALUES(?)';
+            const query = '';
             bcryptjs.hash(req.body.password.toString(), salt, (err, hash) => {
                 if (err) return res.json({error: "Error hashing the password"})
                 const values = [ req.body.firstname, req.body.lastname, req.body.email, req.body.role, hash]
@@ -149,10 +150,9 @@ app.get('/api/products', (req, res) => {
     const query = 'SELECT * FROM products';
     conn.query(query, (err, results) => {
         if (err) {
-            console.error('Error fetching Products: ', err);
             res.status(500).json({ error: 'Error fetching products' });
           } else {
-            res.status(200).json(handleSearch(results).splice(0,25));
+            res.status(200).json(handleSearch(results));
           }
     })
 })
@@ -172,19 +172,19 @@ app.get('/api/sales', (req, res) => {
     const query = 'SELECT * FROM sales';
     conn.query(query, (err, results) => {
         if (err) {
-            console.error('Error fetching Products: ', err);
             res.status(500).json({ error: 'Error fetching products' });
           } else {
-            res.status(200).json(handleSearch(results).splice(0,25));
+            res.status(200).json(handleSearch(results).splice(0,35));
           }
     })
 })
 
 // Sell products
 app.put('/api/sell/:name', (req, res) => {
-    const sql = "SELECT * FROM sales WHERE name=?";
+    const sql = "SELECT * FROM sales WHERE name=? AND description=?";
     const name = req.params.name
-    conn.query(sql, [name], (err, results) => {
+    const description = req.body.description
+    conn.query(sql, [name,description], (err, results) => {
         if (err) return res.json({error: 'Error Fetching product in the database'})
         if (results.length > 0) {
             const amount = results[0].quantity
@@ -195,8 +195,8 @@ app.put('/api/sell/:name', (req, res) => {
                 if (err) return res.json({error: "Error inserting product details to the database"})
                 // return res.json({Status: "Sold", message: 'You have successfully updated the quantity of Products!'})
                 if (results) {
-                    const sql = 'SELECT * FROM products WHERE name=?';
-                    conn.query(sql, [name], (err, result) => {
+                    const sql = 'SELECT * FROM products WHERE name=? AND description=?';
+                    conn.query(sql, [name,description], (err, result) => {
                         if (err) return res.json({error: "Error updating product quantity after sell!"})
                         if (result) {
                             const id = result[0].id
@@ -211,8 +211,8 @@ app.put('/api/sell/:name', (req, res) => {
                 }
             })            
         }else{
-            const query = 'SELECT * FROM products WHERE name=?';
-            conn.query(query, [name], (err, result) => {
+            const query = 'SELECT * FROM products WHERE name=? AND description=?';
+            conn.query(query, [name,description], (err, result) => {
                 if (err) return res.json({error: 'Error Fetching product in the database'})
                 if (result.length > 0) {
                     const sql = 'INSERT INTO sales (`category`,`name`,`description`,`quantity`,`buying`,`selling`) VALUES(?)';
@@ -221,8 +221,8 @@ app.put('/api/sell/:name', (req, res) => {
                         if (err) return res.json({error: "Error inserting sales details to the database"})
                         // return res.json({Status: "Sold", message: 'You have successfully updated the quantity of Products!'})
                         if (results) {
-                            const sql = 'SELECT * FROM products WHERE name=?';
-                            conn.query(sql, [name], (err, result) => {
+                            const sql = 'SELECT * FROM products WHERE name=? AND description=?';
+                            conn.query(sql, [name,description], (err, result) => {
                                 if (err) return res.json({error: "Error updating product quantity after sell!"})
                                 if (result) {
                                     const id = result[0].id
@@ -243,7 +243,6 @@ app.put('/api/sell/:name', (req, res) => {
 })
 
 // Adding stocks
-
 app.put('/api/restock/:id', (req, res) => {
     const query = 'SELECT * FROM products WHERE id=?'
     const id = req.params.id
@@ -255,6 +254,70 @@ app.put('/api/restock/:id', (req, res) => {
             conn.query(sql, [updatedQuantity, id], (err, result) => {
                 if (err) return res.json({error: 'Error updating products quantity in the database'})
                 return res.json({Status: "Updated", message: 'You have successfully updated the quantity of product!'})
+            })
+        }
+    })
+})
+
+// Expense products
+app.put('/api/addExpense/:name', (req, res) => {
+    const sql = "SELECT * FROM expense WHERE name=? AND description=?";
+    const name = req.params.name
+    const description = req.body.description
+    conn.query(sql, [name,description], (err, results) => {
+        if (err) return res.json({error: 'Error Fetching product in the database'})
+        if (results.length > 0) {
+            const amount = results[0].quantity
+            const id = results[0].id
+            const qty = amount + parseInt(req.body.quantity);
+            const query = `UPDATE expense SET quantity = ? WHERE id =?`;
+            conn.query(query, [qty,id],(err, results) => {
+                if (err) return res.json({error: "Error inserting product details to the database"})
+                // return res.json({Status: "Sold", message: 'You have successfully updated the quantity of Products!'})
+                if (results) {
+                    const sql = 'SELECT * FROM products WHERE name=? AND description=?';
+                    conn.query(sql, [name,description], (err, result) => {
+                        if (err) return res.json({error: "Error updating product quantity after sell!"})
+                        if (result) {
+                            const id = result[0].id
+                            const query_products = 'UPDATE products SET quantity=? WHERE id =?'
+                            const quantity = result[0].quantity - parseInt(req.body.quantity)
+                            conn.query(query_products, [quantity,id], (err, result) => {
+                                if (err) return res.json({error: "Error inserting product details to the database"})
+                                return res.json({Status: "Expense", message: 'You have successfully updated the quantity of Products!'})
+                            })
+                        }
+                    })
+                }
+            })            
+        }else{
+            const query = 'SELECT * FROM products WHERE name=? AND description=?';
+            conn.query(query, [name,description], (err, result) => {
+                if (err) return res.json({error: 'Error Fetching product in the database'})
+                if (result.length > 0) {
+                    const id = result[0].id
+                    const sql = 'INSERT INTO expense (`category`,`name`,`description`,`purpose`,`quantity`,`buying`,`selling`) VALUES(?)';
+                    const values = [result[0].category, result[0].name, result[0].description, req.body.purpose, req.body.quantity, result[0].buying, result[0].selling]
+                    conn.query(sql, [values], (err, results) => {
+                        if (err) return res.json({error: "Error inserting sales details to the database"})
+                        // return res.json({Status: "Sold", message: 'You have successfully updated the quantity of Products!'})
+                        if (results) {
+                            const sql = 'SELECT * FROM products WHERE id=?';
+                            conn.query(sql, [id], (err, result) => {
+                                if (err) return res.json({error: "Error updating product quantity after sell!"})
+                                if (result) {
+                                    const id = result[0].id
+                                    const query_products = 'UPDATE products SET quantity=? WHERE id =?'
+                                    const quantity = result[0].quantity - parseInt(req.body.quantity)
+                                    conn.query(query_products, [quantity,id], (err, result) => {
+                                        if (err) return res.json({error: "Error inserting product details to the database"})
+                                        return res.json({Status: "Expense", message: 'You have successfully updated the quantity of Products!'})
+                                    })
+                                }
+                            })
+                        }
+                    })
+                }
             })
         }
     })
@@ -284,5 +347,51 @@ app.get('/api/display/:id', (req, res) => {
           } else {
             res.status(200).json(results);
           }
+    })
+})
+
+// Displays entities on Dashboard
+app.get('/api/stocks', (req, res) => {
+    const sql = 'SELECT * FROM products'
+    conn.query(sql, (err, results) => {
+        if (err) {
+            res.status(500).json({ error: 'Error fetching products' });
+          } else {
+            res.status(200).json(results);
+          }
+    })
+})
+app.get('/api/grandsales', (req, res) => {
+    const sql = 'SELECT * FROM sales'
+    conn.query(sql, (err, results) => {
+        if (err) {
+            res.status(500).json({ error: 'Error fetching products' });
+          } else {
+            res.status(200).json(results);
+          }
+    })
+})
+app.get('/api/expense', (req, res) => {
+    const sql = 'SELECT * FROM expense'
+    conn.query(sql, (err, results) => {
+        if (err) {
+            res.status(500).json({ error: 'Error fetching products' });
+          } else {
+            res.status(200).json(results);
+          }
+    })
+})
+app.get('/api/mpesa', (req, res) => {
+    const sql = 'SELECT * FROM mpesa'
+    conn.query(sql,(err, results) => {
+        if (err) return res.json({error: "Error fetching mpesa Data"})
+        return res.status(200).json(results)
+    })
+})
+app.get('/api/funds', (req, res) => {
+    const sql = 'SELECT * FROM funds'
+    conn.query(sql,(err, results) => {
+        if (err) return res.json({error: "Error fetching funds Data"})
+        return res.status(200).json(results)
     })
 })

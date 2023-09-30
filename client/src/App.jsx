@@ -41,7 +41,7 @@ const App = () => {
           element: <Expense />
         },
         {
-          path:'/addexpense',
+          path:'/addexpense/:id',
           element: <AddExpense />
         },
         {

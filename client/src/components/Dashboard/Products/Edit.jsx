@@ -24,7 +24,7 @@ const Edit = () => {
             setSelling(res.data[0].selling)
         })
         .catch(err => console.log(err))
-    }, [])
+    }, [id])
 
     const handleEdit = async (e) => {
         e.preventDefault();
@@ -69,7 +69,7 @@ const Edit = () => {
             <input name="quantity" type="text" className="form-control" value={selling} onChange={e => setSelling(e.target.value)} required/>
           </div>
         </div>
-        <button type="submit" className="btn btn-primary">Save</button>
+        <button type="submit" className="btn btn-danger">Edit</button>
       </form>
     </>
   )

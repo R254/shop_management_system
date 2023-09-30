@@ -1,6 +1,24 @@
-import { Link } from "react-router-dom"
+import axios from "axios"
+import { useEffect, useState } from "react"
 
 const Expense = () => {
+  const [expense, setExpense] = useState([])
+
+
+  useEffect(() => {
+    const fetchExpense = async () => {
+      await axios.get('http://localhost:3002/api/expense')
+      .then(response => {
+        setExpense(response.data)
+      })
+      .catch()
+    }
+    fetchExpense()
+  }, [])
+
+  let cost_p_item = 0
+  let total_expense = 0
+  
   return (
     <>
       <table className="table table-bordered">
@@ -11,43 +29,38 @@ const Expense = () => {
             <th scope="col">Name</th>
             <th scope="col">description</th>
             <th scope="col">Purpose</th>
-            <th scope="col">Price</th>
+            <th scope="col">Qty/Units</th>
+            <th scope="col">Cost per Unit</th>
+            <th scope="col">Cost per Item</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-            <td>@mdo</td>
-            <td>0.0</td>
-          </tr>
-          <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-            <td>@mdo</td>
-            <td>0.0</td>
-          </tr>
-          <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-            <td>@mdo</td>
-            <td>0.0</td>
-          </tr>
+          {
+            expense.map((item) => {
+              cost_p_item = item.buying * item.quantity
+              total_expense += cost_p_item
+              return (
+                <tr key={item.id}>
+                  <th scope="row">{item.id}</th>
+                  <td>{item.category}</td>
+                  <td>{ item.name }</td>
+                  <td>{ item.description }</td>
+                  <td>{ item.purpose }</td>
+                  <td>{ item.quantity}</td>
+                  <td>{ item.buying }</td>
+                  <td>{ cost_p_item }</td>
+                </tr>
+              )
+            })
+          }
         </tbody>
         <tfoot>
           <tr>
-            <th colSpan={5}>Total Expense</th>
-            <th>0.0</th>
+            <th colSpan={7}>Total Expense</th>
+            <th>{total_expense}</th>
           </tr>
         </tfoot>
       </table>
-      <Link to='/addexpense' className="btn btn-primary">Add Expense</Link>
     </>
   )
 }

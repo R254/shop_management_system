@@ -1,3 +1,17 @@
+.home{
+    display: flex;
+    padding-left: 37vw;
+    padding-top: 27vh;
+}
+.home_content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.home_logo{
+    font-family: var(--great-vibes);
+    font-size: 30px;
+}
 .layout {
     display: flex;
 }
@@ -7,7 +21,7 @@
     align-items: center;
     background-color: brown;
     color: #fff;
-    height: 100vh;
+    height: 249vh;
     padding: 10px;
 }
 .sidebar_menu{
@@ -20,6 +34,7 @@
 .sidebar_menu a{
     text-decoration: none;
     text-transform: uppercase;
+    color: var(--color-white);
 }
 .content{
     margin-left: 10px;

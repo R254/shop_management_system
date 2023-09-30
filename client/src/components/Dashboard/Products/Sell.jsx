@@ -32,9 +32,8 @@ const Sell = () => {
           if (res.data.Status === 'Sold') {
               setMessage(res.data.message)
               setState('Success')
-              navigate('/sales')
-            }
-            else{
+              navigate('/products')
+            }else{
               setMessage(res.data.error)
               setState('error');
             }

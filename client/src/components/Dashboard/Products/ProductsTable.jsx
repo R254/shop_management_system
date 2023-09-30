@@ -42,7 +42,7 @@ const ProductsTable = ({ data }) => {
             {
               role === 'admin' || role === 'user' 
               ?
-              <th scope="col" colSpan={3}>Action</th>
+              <th scope="col" colSpan={4}>Action</th>
               :
               <></>
             }
@@ -82,7 +82,8 @@ const ProductsTable = ({ data }) => {
                     <>
                       <td><Link className="btn btn-primary" to={`/sell/${product.id}`}>Sell</Link></td>
                       <td><Link className="btn btn-success" to={`/restock/${product.id}`}>Add</Link></td>
-                      <td><Link className="btn btn-warning" to={`/edit/${product.id}`}>Edit</Link></td>
+                      <td><Link className="btn btn-warning" to={`/addexpense/${product.id}`}>Exps</Link></td>
+                      <td><Link className="btn btn-danger" to={`/edit/${product.id}`}>Edit</Link></td>
                     </>
                     : role === "user" ?
                     <td><Link className="btn btn-primary" to={`/sell/${product.id}`}>Sell</Link></td>
