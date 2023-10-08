@@ -1,6 +1,6 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import { AddExpense, AddProduct, Dashboard, Edit, Expense, Layout, Login, 
-  NotFound, Products, Register, Restock, Sales, Sell, Selling } from './components'
+import { AddExpense, AddProduct, AddUtilities, Dashboard, Edit, Expense, Layout, Login, 
+  NotFound, Products, Register, Restock, Sales, Sell, Selling, Utilities } from './components'
 const App = () => {
   const router = createBrowserRouter([
     {
@@ -47,6 +47,14 @@ const App = () => {
         {
           path:'/sales',
           element: <Sales />
+        },
+        {
+          path:'/utilities',
+          element: <Utilities />
+        },
+        {
+          path:'/addutilities',
+          element: <AddUtilities />
         }
       ]
     },

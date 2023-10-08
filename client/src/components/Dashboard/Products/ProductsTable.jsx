@@ -80,7 +80,7 @@ const ProductsTable = ({ data }) => {
                     role === "admin" 
                     ? 
                     <>
-                      <td><Link className="btn btn-primary" to={`/sell/${product.id}`}>Sell</Link></td>
+                      <td><Link className="btn btn-primary" to={`/sell/${product.id}`}>Instock</Link></td>
                       <td><Link className="btn btn-success" to={`/restock/${product.id}`}>Add</Link></td>
                       <td><Link className="btn btn-warning" to={`/addexpense/${product.id}`}>Exps</Link></td>
                       <td><Link className="btn btn-danger" to={`/edit/${product.id}`}>Edit</Link></td>

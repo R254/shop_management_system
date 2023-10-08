@@ -167,21 +167,21 @@ app.get('/api/sales', (req, res) => {
         return data.filter(product => 
           keys.some((key) => product[key].toLowerCase().includes(q))
           )
-      }
+    }
 
-    const query = 'SELECT * FROM sales';
+    const query = 'SELECT * FROM october_2023_sales';
     conn.query(query, (err, results) => {
         if (err) {
             res.status(500).json({ error: 'Error fetching products' });
           } else {
-            res.status(200).json(handleSearch(results).splice(0,35));
+            res.status(200).json(handleSearch(results));
           }
     })
 })
 
 // Sell products
 app.put('/api/sell/:name', (req, res) => {
-    const sql = "SELECT * FROM sales WHERE name=? AND description=?";
+    const sql = "SELECT * FROM october_2023_sales WHERE name=? AND description=?";
     const name = req.params.name
     const description = req.body.description
     conn.query(sql, [name,description], (err, results) => {
@@ -189,8 +189,8 @@ app.put('/api/sell/:name', (req, res) => {
         if (results.length > 0) {
             const amount = results[0].quantity
             const id = results[0].id
-            const qty = amount + parseInt(req.body.quantity);
-            const query = `UPDATE sales SET quantity = ? WHERE id =?`;
+            const qty = amount + parseFloat(req.body.amount);
+            const query = `UPDATE october_2023_sales SET quantity = ? WHERE id =?`;
             conn.query(query, [qty,id],(err, results) => {
                 if (err) return res.json({error: "Error inserting product details to the database"})
                 // return res.json({Status: "Sold", message: 'You have successfully updated the quantity of Products!'})
@@ -201,7 +201,7 @@ app.put('/api/sell/:name', (req, res) => {
                         if (result) {
                             const id = result[0].id
                             const query_products = 'UPDATE products SET quantity=? WHERE id =?'
-                            const quantity = result[0].quantity - parseInt(req.body.quantity)
+                            const quantity = result[0].quantity - parseFloat(req.body.amount)
                             conn.query(query_products, [quantity,id], (err, result) => {
                                 if (err) return res.json({error: "Error inserting product details to the database"})
                                 return res.json({Status: "Sold", message: 'You have successfully updated the quantity of Products!'})
@@ -215,8 +215,8 @@ app.put('/api/sell/:name', (req, res) => {
             conn.query(query, [name,description], (err, result) => {
                 if (err) return res.json({error: 'Error Fetching product in the database'})
                 if (result.length > 0) {
-                    const sql = 'INSERT INTO sales (`category`,`name`,`description`,`quantity`,`buying`,`selling`) VALUES(?)';
-                    const values = [result[0].category, result[0].name, result[0].description, req.body.quantity, result[0].buying, result[0].selling]
+                    const sql = 'INSERT INTO october_2023_sales (`category`,`name`,`description`,`quantity`,`buying`,`selling`) VALUES(?)';
+                    const values = [result[0].category, result[0].name, result[0].description, req.body.amount, result[0].buying, result[0].selling]
                     conn.query(sql, [values], (err, results) => {
                         if (err) return res.json({error: "Error inserting sales details to the database"})
                         // return res.json({Status: "Sold", message: 'You have successfully updated the quantity of Products!'})
@@ -227,7 +227,7 @@ app.put('/api/sell/:name', (req, res) => {
                                 if (result) {
                                     const id = result[0].id
                                     const query_products = 'UPDATE products SET quantity=? WHERE id =?'
-                                    const quantity = result[0].quantity - parseInt(req.body.quantity)
+                                    const quantity = result[0].quantity - parseFloat(req.body.amount)
                                     conn.query(query_products, [quantity,id], (err, result) => {
                                         if (err) return res.json({error: "Error inserting product details to the database"})
                                         return res.json({Status: "Sold", message: 'You have successfully updated the quantity of Products!'})
@@ -250,7 +250,7 @@ app.put('/api/restock/:id', (req, res) => {
         if (err) return res.json({error: 'Error fetching products from the database'})
         if (results) {
             const sql = 'UPDATE products SET quantity = ? WHERE id =?'
-            const updatedQuantity = results[0].quantity + parseInt(req.body.quantity)
+            const updatedQuantity = results[0].quantity + parseFloat(req.body.quantity)
             conn.query(sql, [updatedQuantity, id], (err, result) => {
                 if (err) return res.json({error: 'Error updating products quantity in the database'})
                 return res.json({Status: "Updated", message: 'You have successfully updated the quantity of product!'})
@@ -261,7 +261,7 @@ app.put('/api/restock/:id', (req, res) => {
 
 // Expense products
 app.put('/api/addExpense/:name', (req, res) => {
-    const sql = "SELECT * FROM expense WHERE name=? AND description=?";
+    const sql = "SELECT * FROM october_2023_expense WHERE name=? AND description=?";
     const name = req.params.name
     const description = req.body.description
     conn.query(sql, [name,description], (err, results) => {
@@ -269,8 +269,8 @@ app.put('/api/addExpense/:name', (req, res) => {
         if (results.length > 0) {
             const amount = results[0].quantity
             const id = results[0].id
-            const qty = amount + parseInt(req.body.quantity);
-            const query = `UPDATE expense SET quantity = ? WHERE id =?`;
+            const qty = amount + parseFloat(req.body.quantity);
+            const query = `UPDATE october_2023_expense SET quantity = ? WHERE id =?`;
             conn.query(query, [qty,id],(err, results) => {
                 if (err) return res.json({error: "Error inserting product details to the database"})
                 // return res.json({Status: "Sold", message: 'You have successfully updated the quantity of Products!'})
@@ -281,7 +281,7 @@ app.put('/api/addExpense/:name', (req, res) => {
                         if (result) {
                             const id = result[0].id
                             const query_products = 'UPDATE products SET quantity=? WHERE id =?'
-                            const quantity = result[0].quantity - parseInt(req.body.quantity)
+                            const quantity = result[0].quantity - parseFloat(req.body.quantity)
                             conn.query(query_products, [quantity,id], (err, result) => {
                                 if (err) return res.json({error: "Error inserting product details to the database"})
                                 return res.json({Status: "Expense", message: 'You have successfully updated the quantity of Products!'})
@@ -296,7 +296,7 @@ app.put('/api/addExpense/:name', (req, res) => {
                 if (err) return res.json({error: 'Error Fetching product in the database'})
                 if (result.length > 0) {
                     const id = result[0].id
-                    const sql = 'INSERT INTO expense (`category`,`name`,`description`,`purpose`,`quantity`,`buying`,`selling`) VALUES(?)';
+                    const sql = 'INSERT INTO october_2023_expense (`category`,`name`,`description`,`purpose`,`quantity`,`buying`,`selling`) VALUES(?)';
                     const values = [result[0].category, result[0].name, result[0].description, req.body.purpose, req.body.quantity, result[0].buying, result[0].selling]
                     conn.query(sql, [values], (err, results) => {
                         if (err) return res.json({error: "Error inserting sales details to the database"})
@@ -308,7 +308,7 @@ app.put('/api/addExpense/:name', (req, res) => {
                                 if (result) {
                                     const id = result[0].id
                                     const query_products = 'UPDATE products SET quantity=? WHERE id =?'
-                                    const quantity = result[0].quantity - parseInt(req.body.quantity)
+                                    const quantity = result[0].quantity - parseFloat(req.body.quantity)
                                     conn.query(query_products, [quantity,id], (err, result) => {
                                         if (err) return res.json({error: "Error inserting product details to the database"})
                                         return res.json({Status: "Expense", message: 'You have successfully updated the quantity of Products!'})
@@ -351,18 +351,8 @@ app.get('/api/display/:id', (req, res) => {
 })
 
 // Displays entities on Dashboard
-app.get('/api/stocks', (req, res) => {
-    const sql = 'SELECT * FROM products'
-    conn.query(sql, (err, results) => {
-        if (err) {
-            res.status(500).json({ error: 'Error fetching products' });
-          } else {
-            res.status(200).json(results);
-          }
-    })
-})
 app.get('/api/grandsales', (req, res) => {
-    const sql = 'SELECT * FROM sales'
+    const sql = 'SELECT * FROM october_2023_sales'
     conn.query(sql, (err, results) => {
         if (err) {
             res.status(500).json({ error: 'Error fetching products' });
@@ -372,7 +362,7 @@ app.get('/api/grandsales', (req, res) => {
     })
 })
 app.get('/api/expense', (req, res) => {
-    const sql = 'SELECT * FROM expense'
+    const sql = 'SELECT * FROM october_2023_expense'
     conn.query(sql, (err, results) => {
         if (err) {
             res.status(500).json({ error: 'Error fetching products' });
@@ -382,16 +372,45 @@ app.get('/api/expense', (req, res) => {
     })
 })
 app.get('/api/mpesa', (req, res) => {
-    const sql = 'SELECT * FROM mpesa'
+    const sql = 'SELECT * FROM october_2023_mpesa'
     conn.query(sql,(err, results) => {
         if (err) return res.json({error: "Error fetching mpesa Data"})
         return res.status(200).json(results)
     })
 })
 app.get('/api/funds', (req, res) => {
-    const sql = 'SELECT * FROM funds'
+    const sql = 'SELECT * FROM october_2023_funds'
     conn.query(sql,(err, results) => {
         if (err) return res.json({error: "Error fetching funds Data"})
         return res.status(200).json(results)
+    })
+})
+
+// Display utilities
+app.get('/api/utilities', (req, res) => {
+
+    const { q } = req.query
+    const keys = ['username']
+
+    const handleSearch = (data) => {
+        return data.filter(product => 
+          keys.some((key) => product[key].toLowerCase().includes(q))
+          )
+    }
+    
+    const sql = 'SELECT * FROM october_2023_utilities'
+    conn.query(sql,(err, results) => {
+        if (err) return res.json({error: "Error fetching funds Data"})
+        return res.status(200).json(handleSearch(results))
+    })
+})
+
+// Add utilities to the database
+app.post('/api/addutility', (req,res) => {
+    const sql = 'INSERT INTO october_2023_utilities (`username`,`purpose`,`amount`) VALUES(?)';
+    const values = [req.body.username, req.body.purpose, parseFloat(req.body.amount)];
+    conn.query(sql, [values], (err, results) => {
+        if (err) return res.json({error: "Error inserting product details to the database"})
+        return res.json({Status: "Success", message: 'You have successfully added utility bill to the database!'})
     })
 })

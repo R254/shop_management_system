@@ -13,3 +13,5 @@ export {default as Expense} from './Dashboard/Expense/Expense';
 export {default as AddExpense} from './Dashboard/Expense/AddExpense';
 export {default as Selling} from './Dashboard/SellingPrice/Selling';
 export {default as Sales} from './Dashboard/Sales/Sales';
+export {default as Utilities} from './Dashboard/Utilities/Utilities'
+export {default as AddUtilities} from './Dashboard/Utilities/AddUtilities'

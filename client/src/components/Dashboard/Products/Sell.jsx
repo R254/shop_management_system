@@ -11,6 +11,7 @@ const Sell = () => {
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
     const [quantity, setQuantity] = useState(0)
+    const [amountFromdb, setAmountFromdb] = useState(0)
 
     useEffect(() => {
       const fetchProducts = async () => {
@@ -19,6 +20,7 @@ const Sell = () => {
           setName(res.data[0].name)
           setDescription(res.data[0].description)
           setQuantity(res.data[0].quantity)
+          setAmountFromdb(res.data[0].quantity)
         })
         .catch(err => console.log(err))
       }
@@ -27,7 +29,8 @@ const Sell = () => {
 
     const handleSell = async (e) => {
       e.preventDefault();
-      await axios.put('http://localhost:3002/api/sell/'+name, {description,quantity})
+      const amount = amountFromdb - quantity
+      await axios.put('http://localhost:3002/api/sell/'+name, {description,amount})
       .then((res) => {
           if (res.data.Status === 'Sold') {
               setMessage(res.data.message)

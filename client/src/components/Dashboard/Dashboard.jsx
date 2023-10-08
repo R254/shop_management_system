@@ -7,12 +7,13 @@ const Dashboard = () => {
   const [expense, setExpense] = useState([])
   const [mpesa, setMpesa] = useState([])
   const [funds, setFunds] = useState([])
+  const [utilities, setUtilities] = useState([])
 
 
 
   useEffect(() => {
     const fetchStocks = async () => {
-      await axios.get('http://localhost:3002/api/stocks')
+      await axios.get('http://localhost:3002/api/products?q')
       .then(response => {
         setStocks(response.data)
       })
@@ -54,22 +55,30 @@ const Dashboard = () => {
     }
     fetchFunds()
 
+    const fetchUtilities = async () => {
+      await axios.get(`http://localhost:3002/api/utilities?q`)
+      .then(response => {
+        setUtilities(response.data)
+      })
+    }
+    fetchUtilities()
+
   }, [])
 
   let stocks_total = 0
   let sales_total = 0
   let stock_sold = 0
   let expense_total = 0
-  let gross_profit = 0
   let float = 0
   let commission = 0
   let cash = 0
   let till = 0
   let total_funds = 0
+  let total_utilities = 0
 
   stocks.map((stock) => {
     const buying = stock.buying * stock.quantity;
-    stocks_total += Math.round((buying) * 100) / 100;
+    stocks_total += buying
   })
 
   sales.map((item) => {
@@ -77,7 +86,6 @@ const Dashboard = () => {
     const volume_stock_sold = item.buying * item.quantity
     stock_sold += volume_stock_sold
     sales_total += volume_sold
-    gross_profit = Math.round((sales_total - stock_sold) * 100) / 100
   })
 
   expense.map((item) => {
@@ -96,8 +104,16 @@ const Dashboard = () => {
     total_funds = cash + till
   })
 
-  const net_profit = (gross_profit + commission) - expense_total
-  const shop_value = Math.round((net_profit + stocks_total + total_funds) * 100) / 100
+  utilities.map((item) => {
+    total_utilities += item.amount
+  })
+
+
+  total_utilities = Math.round(total_utilities * 100) / 100
+  stocks_total = Math.round(stocks_total * 100) / 100
+  const gross_profit = Math.round((sales_total - stock_sold) * 100) / 100
+  const net_profit = (gross_profit + commission) - (expense_total + total_utilities)
+  const shop_value = Math.round((net_profit + stocks_total + total_funds + float) * 100) / 100
   const mpesandshop = total_funds + commission + float
 
   return (
@@ -132,7 +148,7 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="row p-3">
-      <div className="col-4">
+        <div className="col-4">
           <div className="card border-light">
             <div className="card-header">Profit</div>
             <div className="card-body">
@@ -159,6 +175,18 @@ const Dashboard = () => {
               <p>Mpesa Commission: { commission }</p>
               <p>Cash At Hand: { cash }</p>
               <p>Cash On Till: { till }</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="row p-3">
+        <div className="col-4">
+          <div className="card border-light">
+            <div className="card-header">Utilities</div>
+            <div className="card-body">
+              <h5 className="card-title">Ksh { total_utilities }</h5>
+              <p className="card-text">Some quick example text to build on the card title and make up the bulk of the cards content.</p>
+              
             </div>
           </div>
         </div>

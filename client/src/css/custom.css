@@ -64,3 +64,8 @@
     border-radius: 8px;
     min-width: 25%;
 }
+.card-header{
+    text-transform: uppercase;
+    font-weight:bolder;
+    font-family: var(--dancing-script);
+}

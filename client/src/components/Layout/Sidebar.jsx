@@ -20,6 +20,7 @@ const Sidebar = () => {
             <Link to='/selling'>Prices</Link>
             <Link to='/expense'>expense</Link>
             <Link to='/sales'>Sales</Link>
+            <Link to='/utilities'>Utilities</Link>
             <Link onClick={handleLogout}>logout</Link>
         </ul>
     </div>

@@ -24,7 +24,7 @@ const AddExpense = () => {
         .catch(err => console.log(err))
       }
       fetchProducts()
-    }, [id])   
+    }, [id])
 
     const handleAddExpense = async (e) => {
       e.preventDefault();
@@ -58,11 +58,11 @@ const AddExpense = () => {
         <div className="row mb-3">
           <div className="form-group col-md-4">
             <label htmlFor="purpose" className="mb-1">Purpose Of expense </label>
-            <input name="quantity" type="text" className="form-control" onChange={e => setPurpose(e.target.value)} required/>
+            <input name="quantity" type="text" className="form-control" value={purpose} onChange={e => setPurpose(e.target.value)} required/>
           </div>
           <div className="form-group col-md-4">
             <label htmlFor="quantity" className="mb-1"> Quantity Of Items</label>
-            <input name="quantity" type="text" className="form-control" onChange={e => setQuantity(e.target.value)} required/>
+            <input name="quantity" type="text" className="form-control" value={quantity} onChange={e => setQuantity(e.target.value)} required/>
           </div>
         </div>
         <button type="submit" className="btn btn-warning">Expense</button>
