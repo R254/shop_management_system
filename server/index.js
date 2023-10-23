@@ -259,7 +259,7 @@ app.put('/api/restock/:id', (req, res) => {
     })
 })
 
-// Expense products
+// Adding Expenses 
 app.put('/api/addExpense/:name', (req, res) => {
     const sql = "SELECT * FROM october_2023_expense WHERE name=? AND description=?";
     const name = req.params.name
@@ -273,7 +273,6 @@ app.put('/api/addExpense/:name', (req, res) => {
             const query = `UPDATE october_2023_expense SET quantity = ? WHERE id =?`;
             conn.query(query, [qty,id],(err, results) => {
                 if (err) return res.json({error: "Error inserting product details to the database"})
-                // return res.json({Status: "Sold", message: 'You have successfully updated the quantity of Products!'})
                 if (results) {
                     const sql = 'SELECT * FROM products WHERE name=? AND description=?';
                     conn.query(sql, [name,description], (err, result) => {
@@ -362,12 +361,22 @@ app.get('/api/grandsales', (req, res) => {
     })
 })
 app.get('/api/expense', (req, res) => {
+
+    const { q } = req.query
+    const keys = ['category','name','description','purpose']
+
+    const handleSearch = (data) => {
+        return data.filter(product => 
+          keys.some((key) => product[key].toLowerCase().includes(q))
+          )
+    }
+    
     const sql = 'SELECT * FROM october_2023_expense'
     conn.query(sql, (err, results) => {
         if (err) {
             res.status(500).json({ error: 'Error fetching products' });
           } else {
-            res.status(200).json(results);
+            res.status(200).json(handleSearch(results));
           }
     })
 })
@@ -390,7 +399,7 @@ app.get('/api/funds', (req, res) => {
 app.get('/api/utilities', (req, res) => {
 
     const { q } = req.query
-    const keys = ['username']
+    const keys = ['username','purpose']
 
     const handleSearch = (data) => {
         return data.filter(product => 

@@ -3,24 +3,29 @@ import { useEffect, useState } from "react"
 
 const Expense = () => {
   const [expense, setExpense] = useState([])
+  const [search, setSearch] = useState('')
 
 
   useEffect(() => {
     const fetchExpense = async () => {
-      await axios.get('http://localhost:3002/api/expense')
+      await axios.get(`http://localhost:3002/api/expense?q=${search}`)
       .then(response => {
         setExpense(response.data)
       })
       .catch()
     }
-    fetchExpense()
-  }, [])
+    if (search.length === 0 || search.length > 2) fetchExpense()
+  }, [search])
 
   let cost_p_item = 0
   let total_expense = 0
   
   return (
     <>
+      <div className="products-grp">
+        <input type="text" placeholder="Search..." className="m-1" 
+        onChange={(e) => setSearch(e.target.value)} />
+      </div>
       <table className="table table-bordered">
         <thead className="table-light">
           <tr>
@@ -39,6 +44,7 @@ const Expense = () => {
             expense.map((item) => {
               cost_p_item = item.buying * item.quantity
               total_expense += cost_p_item
+              total_expense = Math.round(total_expense * 100) /100
               return (
                 <tr key={item.id}>
                   <th scope="row">{item.id}</th>

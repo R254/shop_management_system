@@ -9,8 +9,6 @@ const Dashboard = () => {
   const [funds, setFunds] = useState([])
   const [utilities, setUtilities] = useState([])
 
-
-
   useEffect(() => {
     const fetchStocks = async () => {
       await axios.get('http://localhost:3002/api/products?q')
@@ -31,7 +29,7 @@ const Dashboard = () => {
     fetchSales()
 
     const fetchExpense = async () => {
-      await axios.get('http://localhost:3002/api/expense')
+      await axios.get('http://localhost:3002/api/expense?q')
       .then(response => {
         setExpense(response.data)
       })
@@ -108,11 +106,12 @@ const Dashboard = () => {
     total_utilities += item.amount
   })
 
-
   total_utilities = Math.round(total_utilities * 100) / 100
+  expense_total = Math.round(expense_total * 100) / 100
   stocks_total = Math.round(stocks_total * 100) / 100
   const gross_profit = Math.round((sales_total - stock_sold) * 100) / 100
-  const net_profit = (gross_profit + commission) - (expense_total + total_utilities)
+  let net_profit = (gross_profit + commission) - (expense_total + total_utilities)
+  net_profit = Math.round(net_profit * 100) / 100
   const shop_value = Math.round((net_profit + stocks_total + total_funds + float) * 100) / 100
   const mpesandshop = total_funds + commission + float
 
