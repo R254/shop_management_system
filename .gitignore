@@ -23,3 +23,4 @@ firebasedb.js
 *.sln
 *.sw?
 *.env
+*.sql

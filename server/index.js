@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const jwt = require('jsonwebtoken')
 const bcryptjs = require('bcryptjs')
-const mysql = require('mysql')
+const mysql = require('mysql2')
 const cookieParser = require('cookie-parser')
 const salt = 10
 require('dotenv').config()
@@ -48,8 +48,8 @@ app.post('/register', (req, res) => {
         if (results.length > 0) {
             return res.json({error: 'The email used already exists! Please sign in!', Status: 'Error'})
         } else {
-            // const query = 'INSERT INTO users (`firstname`,`lastname`,`email`,`role`,`password`) VALUES(?)';
-            const query = '';
+            const query = 'INSERT INTO users (`firstname`,`lastname`,`email`,`role`,`password`) VALUES(?)';
+            // const query = '';
             bcryptjs.hash(req.body.password.toString(), salt, (err, hash) => {
                 if (err) return res.json({error: "Error hashing the password"})
                 const values = [ req.body.firstname, req.body.lastname, req.body.email, req.body.role, hash]
@@ -426,3 +426,4 @@ app.post('/api/addutility', (req,res) => {
         return res.json({Status: "Success", message: 'You have successfully added utility bill to the database!'})
     })
 })
+
