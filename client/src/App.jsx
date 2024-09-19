@@ -1,8 +1,8 @@
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { RouterProvider, createHashRouter } from 'react-router-dom';
 import { AddExpense, AddProduct, AddUtilities, Dashboard, Edit, Expense, Layout, Login, 
   NotFound, Products, Register, Restock, Sales, Sell, Selling, Utilities } from './components'
 const App = () => {
-  const router = createBrowserRouter([
+  const router = createHashRouter([
     {
       path:'/',
       element: <Layout />,
