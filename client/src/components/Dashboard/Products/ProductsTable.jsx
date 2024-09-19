@@ -87,7 +87,7 @@ const ProductsTable = ({ data }) => {
                     </>
                     : role === "user" ?
                     <td><Link className="btn btn-primary" to={`/sell/${product.id}`}>Instock</Link></td>
-                    : 
+                    :
                     <></>
                   }
                   

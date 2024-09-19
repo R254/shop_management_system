@@ -112,7 +112,8 @@ const Dashboard = () => {
   const gross_profit = Math.round((sales_total - stock_sold) * 100) / 100
   let net_profit = (gross_profit + commission) - (expense_total + total_utilities)
   net_profit = Math.round(net_profit * 100) / 100
-  const shop_value = Math.round((net_profit + stocks_total + total_funds + float) * 100) / 100
+  const debts = 6955
+  const shop_value = Math.round((net_profit + stocks_total + total_funds + float + debts) * 100) / 100
   const mpesandshop = total_funds + commission + float
 
   return (
@@ -170,10 +171,10 @@ const Dashboard = () => {
             <div className="card-header">Mpesa & Shop Funds</div>
             <div className="card-body">
               <h5 className="card-title">Ksh { mpesandshop }</h5>
-              <p>Mpesa Float: {float}</p>
-              <p>Mpesa Commission: { commission }</p>
+              <p>Mpesa Float: {float}, Mpesa Commission: { commission }, Cash At Hand: { cash }, Cash On Till: { till }, Debts : {debts}</p>
+              {/* <p>Mpesa Commission: { commission }</p>
               <p>Cash At Hand: { cash }</p>
-              <p>Cash On Till: { till }</p>
+              <p>Cash On Till: { till }</p> */}
             </div>
           </div>
         </div>
@@ -182,6 +183,16 @@ const Dashboard = () => {
         <div className="col-4">
           <div className="card border-light">
             <div className="card-header">Utilities</div>
+            <div className="card-body">
+              <h5 className="card-title">Ksh { total_utilities }</h5>
+              <p className="card-text">Some quick example text to build on the card title and make up the bulk of the cards content.</p>
+              
+            </div>
+          </div>
+        </div>
+        <div className="col-4">
+          <div className="card border-light">
+            <div className="card-header">Growth</div>
             <div className="card-body">
               <h5 className="card-title">Ksh { total_utilities }</h5>
               <p className="card-text">Some quick example text to build on the card title and make up the bulk of the cards content.</p>
